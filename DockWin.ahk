@@ -12,10 +12,10 @@
 
 ;#InstallKeybdHook
 #SingleInstance, Force
-SetTitleMatchMode, 2		; 2: A window's title can contain WinTitle anywhere inside it to be a match. 
+SetTitleMatchMode, 2		;A window's title can contain WinTitle anywhere inside it to be a match. 
 SetTitleMatchMode, Fast		;Fast is default
 DetectHiddenWindows, off	;Off is default
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 CrLf=`r`n
 FileName:="WinPos.txt"
 
@@ -24,17 +24,17 @@ Menu, Tray, Icon, %A_ScriptDir%\DockWin.ico,, 1
 
 WinTitle = DockWin v0.7
 Menu, Tray, Icon
-Menu, Tray, Tip, %WinTitle%:`nCapture and Restore Screens ; `n is a line break.
+Menu, Tray, Tip, %WinTitle%:`nCapture and Restore Screens ;`n is a line break.
 Menu, Tray, NoStandard
 
 Menu, Tray, Add, %WinTitle%, mDoNothing
 Menu, Tray, Default, %WinTitle%
 Menu, Tray, Disable, %WinTitle%
-Menu, Tray, Add      ; time for a nice separator
+Menu, Tray, Add ;time for a nice separator
 Menu, Tray, Add, Edit WinPos.txt, mEdit
 Menu, Tray, Add, Capture Screens - Shift+Win+0, mCapture
 Menu, Tray, Add, Restore Screens - Win+0, mRestore
-Menu, Tray, Add      ; time for a nice separator
+Menu, Tray, Add ;time for a nice separator
 Menu, Tray, Add, Exit %WinTitle%, mExit
 
 Loop, %0% {                       ;for each command line parameter
@@ -50,7 +50,7 @@ mEdit:
 
 Run, Notepad %A_WorkingDir%\%FileName%, %A_WorkingDir%, UseErrorLevel
 
-Return     ; failsafe / probably never hits this line
+Return     ;failsafe / probably never hits this line
 
 ; ====
 mExit:
@@ -107,17 +107,17 @@ mRestore:
 			Try
 			{
 				Run %Win_path%	
-				sleep 1000		;Give some time for the program to launch.	
+				WinWait Win_Title, , 6
+				;sleep 1000		;Give some time for the program to launch.	
 			}
 		}
-
 		If ( (Win_maximized = 1) and WinExist(Win_Title) )
 		{	
 			WinRestore
 			WinActivate
 			WinMove, A,,%Win_x%,%Win_y%,%Win_width%,%Win_height%
 			WinMaximize, A
-		} Else If ((Win_maximized = -1) and (StrLen(Win_Title) > 0) and WinExist(Win_Title) )		; Value of -1 means Window is minimised
+		} Else If ((Win_maximized = -1) and (StrLen(Win_Title) > 0) and WinExist(Win_Title) )		;Value of -1 means Window is minimised
 		{	
 			WinRestore
 			WinActivate
@@ -170,10 +170,11 @@ mCapture:
     WinGet, win_maximized, minmax, ahk_class %this_class%
     WinActivate, ahk_id %this_id%
     WinGetPos, x, y, Width, Height, A ;Wintitle
+	WinGet, path, ProcessPath, A
 
 	if ( (StrLen(this_title)>0) and (this_title<>"Start") )
 	{
-		line=Title="%this_title%"`,x=%x%`,y=%y%`,width=%width%`,height=%height%`,maximized=%win_maximized%,path=""`r`n
+		line=Title="%this_title%"`,x=%x%`,y=%y%`,width=%width%`,height=%height%`,maximized=%win_maximized%,path="%path%"`r`n
 		file.Write(line)
    	}
 	
@@ -198,7 +199,6 @@ SectionHeader()
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
 	line=SECTION: Monitors=%MonitorCount%,MonitorPrimary=%MonitorPrimary%
-
         WinGetPos, x, y, Width, Height, Program Manager
 	line:= line . "; Desktop size:" . x . "," . y . "," . width . "," . height
 
