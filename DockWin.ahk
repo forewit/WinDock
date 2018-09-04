@@ -140,12 +140,12 @@ RETURN
 #+0::
 mCapture:
 
- MsgBox, 4,Dock Windows,Save window positions? (it will append to the file!)
+ MsgBox, 4,Dock Windows,Save window positions? (it will overwrite the file!)
  IfMsgBox, NO, Return
 
  WinGetActiveTitle, SavedActiveWindow
 
- file := FileOpen(FileName, "a")
+ file := FileOpen(FileName, "w")
  if !IsObject(file)
  {
 	MsgBox, Can't open "%FileName%" for writing.
