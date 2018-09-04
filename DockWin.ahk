@@ -3,6 +3,7 @@
 ; Updated by Ashley Dawson 7/2015
 ; Updated by Carlo Costanzo 11/2016
 ; Updated by Rene Weselowski 7/2017,9/2017
+; Updated by Marc Anderson 9/2018
 ;
 ; To use comandline switches compile as exe and use:
 ; /restore - restore Window-Configuration on start
@@ -19,9 +20,6 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 CrLf=`r`n
 FileName:="WinPos.txt"
 
-FileInstall, DockWin.ico, %A_ScriptDir%\DockWin.ico
-Menu, Tray, Icon, %A_ScriptDir%\DockWin.ico,, 1
-
 WinTitle = DockWin v0.7
 Menu, Tray, Icon
 Menu, Tray, Tip, %WinTitle%:`nCapture and Restore Screens ;`n is a line break.
@@ -37,10 +35,10 @@ Menu, Tray, Add, Restore Screens - Win+0, mRestore
 Menu, Tray, Add ;time for a nice separator
 Menu, Tray, Add, Exit %WinTitle%, mExit
 
-Loop, %0% {                       ;for each command line parameter
-	If (%A_Index% = "/restore")        ;check if known command line parameter exists
+Loop, %0% { ;for each command line parameter
+	If (%A_Index% = "/restore") ;check if known command line parameter exists
 		Goto, mRestore
-} 
+}
 
 Return
 
@@ -50,14 +48,13 @@ mEdit:
 
 Run, Notepad %A_WorkingDir%\%FileName%, %A_WorkingDir%, UseErrorLevel
 
-Return     ;failsafe / probably never hits this line
+Return ;failsafe / probably never hits this line
 
 ; ====
 mExit:
 ; ====
 
 ExitApp, 0
-
 
 ;Win-0 (Restore window positions from file)
 
@@ -75,7 +72,7 @@ mRestore:
       ;Read through file until correct section found
       If (A_LoopReadLine<>SectionToFind) 
 		Continue
-    }	  
+    }
 
 		;Exit if another section reached
 		If ( SectionFound and SubStr(A_LoopReadLine,1,8)="SECTION:")
@@ -85,7 +82,7 @@ mRestore:
 		
 		Win_Title:="", Win_x:=0, Win_y:=0, Win_width:=0, Win_height:=0, Win_maximized:=0
 
-		Loop, Parse, A_LoopReadLine, CSV 
+		Loop, Parse, A_LoopReadLine, CSV
 		{
 			EqualPos:=InStr(A_LoopField,"=")
 			Var:=SubStr(A_LoopField,1,EqualPos-1)
@@ -93,11 +90,11 @@ mRestore:
 			IfInString, ParmVals, %Var%
 			{
 				;Remove any surrounding double quotes (")
-				If (SubStr(Val,1,1)=Chr(34)) 
+				If (SubStr(Val,1,1)=Chr(34))
 				{
 					StringMid, Val, Val, 2, StrLen(Val)-2
 				}
-				Win_%Var%:=Val  
+				Win_%Var%:=Val
 			}
 		}
 		
@@ -108,7 +105,6 @@ mRestore:
 			{
 				Run %Win_path%	
 				WinWait Win_Title, , 6
-				;sleep 1000		;Give some time for the program to launch.	
 			}
 		}
 		If ( (Win_maximized = 1) and WinExist(Win_Title) )
@@ -140,7 +136,6 @@ mRestore:
   WinActivate, %SavedActiveWindow%
 RETURN
 
-
 ;Win-Shift-0 (Save current windows to file)
 #+0::
 mCapture:
@@ -160,7 +155,7 @@ mCapture:
   line:= SectionHeader() . CrLf
   file.Write(line)
 
-  ; Loop through all windows on the entire system
+  ;Loop through all windows on the entire system
   WinGet, id, list,,, Program Manager
   Loop, %id%
   {
@@ -178,13 +173,13 @@ mCapture:
 		file.Write(line)
    	}
 	
-	if(win_maximized = -1)		;Re-minimize any windows that were minimised before we started.
+	if(win_maximized = -1) ;Re-minimize any windows that were minimised before we started.
 	{
 		WinMinimize, A
 	}
   }
 
-  file.write(CrLf)  ;Add blank line after section
+  file.write(CrLf) ;Add blank line after section
   file.Close()
 
   ;Restore active window
@@ -206,5 +201,5 @@ SectionHeader()
 }
 
 ; =====
-mDoNothing: ; for labels.
+mDoNothing: ;for labels.
 ; =====
