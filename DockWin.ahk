@@ -1,9 +1,11 @@
-;DockWin v0.7 - Save and Restore window positions when docking/undocking (using hotkeys)
+;DockWin - Save and Restore window positions when docking/undocking (using hotkeys)
 ; Paul Troiano, 6/2014
 ; Updated by Ashley Dawson 7/2015
 ; Updated by Carlo Costanzo 11/2016
 ; Updated by Rene Weselowski 7/2017,9/2017
 ; Updated by Marc Anderson 9/2018
+;
+; Original Source https://autohotkey.com/board/topic/112113-dockwin-storerecall-window-positions/page-3
 ;
 ; To use comandline switches compile as exe and use:
 ; /restore - restore Window-Configuration on start
@@ -20,7 +22,7 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 CrLf=`r`n
 FileName:="WinPos.txt"
 
-WinTitle = DockWin v0.7
+WinTitle = DockWin
 Menu, Tray, Icon
 Menu, Tray, Tip, %WinTitle%:`nCapture and Restore Screens ;`n is a line break.
 Menu, Tray, NoStandard
@@ -140,7 +142,7 @@ RETURN
 #+0::
 mCapture:
 
- MsgBox, 4,Dock Windows,Save window positions? (it will overwrite the file!)
+ MsgBox, 4,Dock Windows,Save window positions? (Overwrite WinPos.txt)
  IfMsgBox, NO, Return
 
  WinGetActiveTitle, SavedActiveWindow
@@ -164,7 +166,7 @@ mCapture:
     WinGetTitle, this_title, ahk_id %this_id%
     WinGet, win_maximized, minmax, ahk_class %this_class%
     WinActivate, ahk_id %this_id%
-    WinGetPos, x, y, Width, Height, A ;Wintitle
+    WinGetPos, x, y, Width, Height, A
 	WinGet, path, ProcessPath, A
 
 	if ( (StrLen(this_title)>0) and (this_title<>"Start") )
